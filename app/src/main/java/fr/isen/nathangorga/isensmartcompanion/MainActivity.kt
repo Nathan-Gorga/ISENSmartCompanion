@@ -1,5 +1,6 @@
 package fr.isen.nathangorga.isensmartcompanion
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -47,6 +48,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import fr.isen.nathangorga.isensmartcompanion.ui.theme.ISENSmartCompanionTheme
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -133,8 +135,9 @@ fun MainScreen() {
 }
 
 @Composable
-fun EventsScreen(navController: NavHostController) {
+fun EventsScreen(navController: NavHostController) { //navController not yet used
     val events = getFakeEvents()
+    val context = LocalContext.current // ✅ Get the correct context
 
     Column(
         modifier = Modifier
@@ -142,15 +145,22 @@ fun EventsScreen(navController: NavHostController) {
             .padding(16.dp)
     ) {
         Text("Événements ISEN", fontSize = 24.sp, modifier = Modifier.padding(bottom = 8.dp))
+
         LazyColumn {
             items(events) { event ->
-                EventItem(event, onClick = {
-                    navController.navigate("event_detail/${event.id}")
-                })
+                EventItem(event) { selectedEvent ->
+                    val intent = Intent(context, EventDetailActivity::class.java).apply {
+                        putExtra("event", selectedEvent) // Pass event data
+                    }
+                    context.startActivity(intent) // ✅ Correct way to start a new activity
+                }
             }
         }
     }
 }
+
+
+
 
 @Composable
 fun HistoryScreen() { //TODO : add log of events
@@ -159,14 +169,14 @@ fun HistoryScreen() { //TODO : add log of events
 
 
 @Composable
-fun EventItem(event: Event, onClick: () -> Unit) { //TODO : add event details
+fun EventItem(event: Event, onClick: (Event) -> Unit) {
     Card(
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.LightGray),
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
-            .clickable { onClick() }
+            .clickable { onClick(event) }
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(text = event.title, fontSize = 20.sp, color = Color.Black)
@@ -219,8 +229,8 @@ fun PreviewEventsScreen() {
 @Composable
 fun UserInput() { //TODO : log user inputs in history page
     var userInput by remember { mutableStateOf("") }
-    var responseText by remember { mutableStateOf("") } // Holds the AI's response
-    val context = LocalContext.current // Get context for Toast
+    var responseText by remember { mutableStateOf("") }
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -234,7 +244,7 @@ fun UserInput() { //TODO : log user inputs in history page
                 text = responseText,
                 fontSize = 18.sp,
                 color = Color.Gray,
-                modifier = Modifier.padding(bottom = 8.dp) // Space before input field
+                modifier = Modifier.padding(bottom = 8.dp)
             )
         }
 
@@ -244,7 +254,7 @@ fun UserInput() { //TODO : log user inputs in history page
             label = { Text("Ask your question...") },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 8.dp), // Space between input and button
+                .padding(bottom = 8.dp),
             shape = RoundedCornerShape(16.dp),
             colors = TextFieldDefaults.colors(
                 focusedIndicatorColor = Color.Gray,
