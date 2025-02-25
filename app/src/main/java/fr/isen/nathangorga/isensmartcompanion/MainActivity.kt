@@ -20,7 +20,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -48,176 +47,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import fr.isen.nathangorga.isensmartcompanion.ui.theme.ISENSmartCompanionTheme
-
-//
-
-//
-//class MainActivity : ComponentActivity() {
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        enableEdgeToEdge()
-//        setContent {
-//            ISENSmartCompanionTheme {
-//                val navController = rememberNavController()
-//                Scaffold(
-//                    bottomBar = { BottomNavigationBar(navController)}
-//                ) { innerPadding ->
-//                    Column(modifier = Modifier.padding(innerPadding)) {
-//                        TitleAndLogo()
-//                        Spacer(modifier = Modifier.weight(1f))
-//                        UserInput()
-//
-//
-//                    }
-//                }
-//
-//
-//            }
-//        }
-//    }
-//}
-//
-//
-//@Composable
-//fun Greeting(name: String, modifier: Modifier = Modifier) {
-//    Text(
-//        text = "Hello $name!",
-//        modifier = modifier
-//    )
-//}
-//
-//@Composable
-//fun TitleAndLogo() {
-//    Column(
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .padding(16.dp),
-//        horizontalAlignment = Alignment.CenterHorizontally
-//    ) {
-//        Image(
-//            painter = painterResource(id = R.drawable.logo), // Load the image from resources
-//            contentDescription = "App Logo",
-//            modifier = Modifier.size(100.dp) // Set the image size
-//        )
-//
-//        Spacer(modifier = Modifier.height(8.dp))
-//        Text(
-//            text = "ISEN Smart Companion",
-//            fontSize = 24.sp,
-//            style = MaterialTheme.typography.headlineMedium
-//        )
-//
-//
-//    }
-//}
-//
-//
-//@Composable
-//fun BottomNavigationBar(navController: NavHostController){
-//    val items =listOf("home", "events", "history")
-//    NavigationBar {
-//        items.forEach{screen ->
-//            NavigationBarItem(
-//                label = { Text(screen.replaceFirstChar { it.uppercase()})},
-//                selected= navController.currentBackStackEntryAsState().value?.destination?.route == screen,
-//                onClick = { navController.navigate(screen) },
-//                icon = { /* Add icons later if needed */ }
-//            )
-//        }
-//    }
-//}
-//
-//@Composable
-//fun NavigationGraph(navController: NavHostController, modifier: Modifier = Modifier) {
-//
-//    NavHost(navController, startDestination = "home", modifier = modifier) {
-//        composable("home") { MainScreen() }
-//        composable("events") { EventsScreen(navController) } // Pass navController for navigation
-//        composable("history") { HistoryScreen() }
-//    }
-//}
-//
-//@Composable
-//fun MainScreen(){
-//    Text("Welcome to Home Screen", modifier = Modifier.padding(16.dp))
-//}
-//
-//fun getFakeEvents(): List<Event> {
-//    return listOf(
-//        Event(1, "BDE Party", "A fun night organized by the BDE.", "March 10, 2025", "ISEN Hall", "Party"),
-//        Event(2, "Gala Night", "An elegant evening with music and dinner.", "April 15, 2025", "Grand Hotel", "Gala"),
-//        Event(3, "Cohesion Day", "A day for students to bond and play games.", "May 5, 2025", "ISEN Campus", "Team Building")
-//    )
-//}
-//
-//@Composable
-//fun EventsScreen(navController: NavHostController) {
-//    val events = getFakeEvents()
-//
-//    LazyColumn {
-//        items(events) { event ->
-//            EventItem(event, onClick = { navController.navigate("event_detail") })
-//        }
-//    }
-//
-//
-//}
-//
-//@Composable
-//fun HistoryScreen() {
-//    Text("History of events", modifier = Modifier.padding(16.dp))
-//}
-//
-//@Preview(showBackground = true)
-//@Composable
-//fun GreetingPreview() {
-//    ISENSmartCompanionTheme {
-//        Greeting("Android")
-//    }
-//}
-//
-//@Composable
-//fun EventItem(event: Event, onClick: () -> Unit) {
-//    Card(
-//        onClick = onClick,
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .padding(8.dp)
-//    ) {
-//        Column(modifier = Modifier.padding(16.dp)) {
-//            Text(event.title, style = MaterialTheme.typography.headlineSmall)
-//            Spacer(modifier = Modifier.height(4.dp))
-//            Text(event.date, style = MaterialTheme.typography.bodyMedium)
-//            Text(event.location, style = MaterialTheme.typography.bodyMedium)
-//        }
-//    }
-//    onClick = {
-//        val intent = Intent(context, EventDetailActivity::class.java)
-//        intent.putExtra("event_title", event.title)
-//        context.startActivity(intent)
-//    }
-//
-//}
-//
-//
-//}
-//class MainActivity : ComponentActivity() {
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        enableEdgeToEdge()
-//        setContent {
-//            ISENSmartCompanionTheme {
-//                val navController = rememberNavController()
-//                Scaffold(
-//                    bottomBar = { BottomNavigationBar(navController) }
-//                ) { innerPadding ->
-//                    NavigationGraph(navController, Modifier.padding(innerPadding))
-//                }
-//            }
-//        }
-//    }
-//}
-
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -248,9 +77,9 @@ fun TitleAndLogo() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            painter = painterResource(id = R.drawable.logo), // Load the image from resources
+            painter = painterResource(id = R.drawable.logo),
             contentDescription = "App Logo",
-            modifier = Modifier.size(100.dp) // Set the image size
+            modifier = Modifier.size(100.dp)
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -264,7 +93,7 @@ fun TitleAndLogo() {
     }
 }
 
-// --- Navigation ---
+//Navigation
 @Composable
 fun BottomNavigationBar(navController: NavHostController) {
     val items = listOf("home", "events", "history")
@@ -291,7 +120,7 @@ fun NavigationGraph(navController: NavHostController, modifier: Modifier = Modif
     }
 }
 
-// --- Screens ---
+// Screens
 @Composable
 fun MainScreen() {
     Column(modifier = Modifier.padding(bottom = 8.dp)) {
@@ -324,22 +153,13 @@ fun EventsScreen(navController: NavHostController) {
 }
 
 @Composable
-fun HistoryScreen() {
+fun HistoryScreen() { //TODO : add log of events
     Text("Historique des événements", modifier = Modifier.padding(16.dp))
 }
 
-// --- Event Data Model & Fake Data ---
-//data class Event(
-//    val id: Int,
-//    val title: String,
-//    val description: String,
-//    val date: String,
-//    val location: String,
-//    val category: String
-//)
-// --- Event Item ---
+
 @Composable
-fun EventItem(event: Event, onClick: () -> Unit) {
+fun EventItem(event: Event, onClick: () -> Unit) { //TODO : add event details
     Card(
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.LightGray),
@@ -356,7 +176,7 @@ fun EventItem(event: Event, onClick: () -> Unit) {
     }
 }
 
-
+// TODO : delete getFakeEvents once API has been added
 fun getFakeEvents(): List<Event> {
     return listOf(
         Event(
@@ -386,7 +206,7 @@ fun getFakeEvents(): List<Event> {
     )
 }
 
-// --- Preview ---
+//Preview
 @Preview(showBackground = true)
 @Composable
 fun PreviewEventsScreen() {
@@ -395,9 +215,9 @@ fun PreviewEventsScreen() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
-fun UserInput() {
+fun UserInput() { //TODO : log user inputs in history page
     var userInput by remember { mutableStateOf("") }
     var responseText by remember { mutableStateOf("") } // Holds the AI's response
     val context = LocalContext.current // Get context for Toast
@@ -408,7 +228,7 @@ fun UserInput() {
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        //  AI Response is now displayed above the input field
+
         if (responseText.isNotEmpty()) {
             Text(
                 text = responseText,
@@ -435,10 +255,10 @@ fun UserInput() {
 
         Button(
             onClick = {
-                // Show a Toast message
+
                 Toast.makeText(context, "Question Submitted", Toast.LENGTH_SHORT).show()
 
-                // Simulate a fake AI response
+                // TODO : add API key to have real AI interaction
                 responseText = "AI says: '${userInput.trim()}' is a great question!"
             },
             shape = RoundedCornerShape(12.dp)
