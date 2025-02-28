@@ -136,6 +136,7 @@ fun MainScreen() {
 }
 
 @Composable
+
 fun EventsScreen(navController: NavHostController) {
     val context = LocalContext.current
     var events by remember { mutableStateOf<List<Event>>(emptyList()) }
@@ -160,11 +161,13 @@ fun EventsScreen(navController: NavHostController) {
         }
     }
 
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
+
         Text(
             "Événements ISEN",
             fontSize = 24.sp,
@@ -193,6 +196,7 @@ fun EventsScreen(navController: NavHostController) {
         }
     }
 }
+
 
 
 

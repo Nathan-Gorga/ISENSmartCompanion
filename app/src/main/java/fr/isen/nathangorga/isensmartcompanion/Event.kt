@@ -4,6 +4,7 @@ import java.io.Serializable
 
 
 data class Event(
+
     val category: String = "",
     val date: String = "",
     val description: String = "",
@@ -11,4 +12,5 @@ data class Event(
     val location: String = "",
     val title: String = ""
 ) : Serializable
+
 
