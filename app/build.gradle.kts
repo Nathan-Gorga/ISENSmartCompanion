@@ -1,3 +1,5 @@
+val implementation: Unit = Unit
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -60,6 +62,6 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
 
     implementation(libs.androidx.material3)
-
-
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
 }

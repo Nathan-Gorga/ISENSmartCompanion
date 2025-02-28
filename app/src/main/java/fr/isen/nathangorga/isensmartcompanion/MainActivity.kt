@@ -1,5 +1,6 @@
 package fr.isen.nathangorga.isensmartcompanion
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -29,6 +30,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,6 +49,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import fr.isen.nathangorga.isensmartcompanion.ui.theme.ISENSmartCompanionTheme
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -134,23 +137,66 @@ fun MainScreen() {
 
 @Composable
 fun EventsScreen(navController: NavHostController) {
-    val events = getFakeEvents()
+    val context = LocalContext.current
+    var events by remember { mutableStateOf<List<Event>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }  // Track loading state
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+
+    // Retrieve events from the web service
+    LaunchedEffect(Unit) {
+        try {
+            val response = RetrofitClient.apiService.getEvents()
+            if (response.isSuccessful && response.body() != null) {
+                // Convert the response (Map<String, Event>) to List<Event>
+                events = response.body() ?: emptyList()
+                isLoading = false
+            } else {
+                errorMessage = "Error: ${response.code()} ${response.message()}"
+                isLoading = false
+            }
+        } catch (e: Exception) {
+            errorMessage = "Exception: ${e.message}"
+            isLoading = false
+        }
+    }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Text("Événements ISEN", fontSize = 24.sp, modifier = Modifier.padding(bottom = 8.dp))
-        LazyColumn {
-            items(events) { event ->
-                EventItem(event, onClick = {
-                    navController.navigate("event_detail/${event.id}")
-                })
+        Text(
+            "Événements ISEN",
+            fontSize = 24.sp,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+
+        if (isLoading) {
+            Text("Loading...", modifier = Modifier.padding(16.dp))
+        } else if (errorMessage != null) {
+            Text(
+                "Failed to load events: $errorMessage",
+                color = Color.Red,
+                modifier = Modifier.padding(16.dp)
+            )
+        } else {
+            LazyColumn {
+                items(events) { event ->
+                    EventItem(event) { selectedEvent ->
+                        val intent = Intent(context, EventDetailActivity::class.java).apply {
+                            putExtra("event", selectedEvent)
+                        }
+                        context.startActivity(intent)
+                    }
+                }
             }
         }
     }
 }
+
+
+
+
 
 @Composable
 fun HistoryScreen() { //TODO : add log of events
@@ -159,14 +205,14 @@ fun HistoryScreen() { //TODO : add log of events
 
 
 @Composable
-fun EventItem(event: Event, onClick: () -> Unit) { //TODO : add event details
+fun EventItem(event: Event, onClick: (Event) -> Unit) {
     Card(
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.LightGray),
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
-            .clickable { onClick() }
+            .clickable { onClick(event) }
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(text = event.title, fontSize = 20.sp, color = Color.Black)
@@ -175,36 +221,36 @@ fun EventItem(event: Event, onClick: () -> Unit) { //TODO : add event details
         }
     }
 }
-
-// TODO : delete getFakeEvents once API has been added
-fun getFakeEvents(): List<Event> {
-    return listOf(
-        Event(
-            1,
-            "BDE Soirée",
-            "Une soirée étudiante incroyable !",
-            "2025-03-10",
-            "Campus ISEN",
-            "Soirée"
-        ),
-        Event(
-            2,
-            "Gala ISEN",
-            "Le grand gala annuel de l'ISEN.",
-            "2025-04-15",
-            "Salle Prestige",
-            "Gala"
-        ),
-        Event(
-            3,
-            "Journée Cohésion",
-            "Une journée pour mieux se connaître.",
-            "2025-02-20",
-            "Parc ISEN",
-            "Cohésion"
-        )
-    )
-}
+//
+//// TODO : delete getFakeEvents once API has been added
+//fun getFakeEvents(): List<Event> {
+//    return listOf(
+//        Event(
+//            1,
+//            "BDE Soirée",
+//            "Une soirée étudiante incroyable !",
+//            "2025-03-10",
+//            "Campus ISEN",
+//            "Soirée"
+//        ),
+//        Event(
+//            2,
+//            "Gala ISEN",
+//            "Le grand gala annuel de l'ISEN.",
+//            "2025-04-15",
+//            "Salle Prestige",
+//            "Gala"
+//        ),
+//        Event(
+//            3,
+//            "Journée Cohésion",
+//            "Une journée pour mieux se connaître.",
+//            "2025-02-20",
+//            "Parc ISEN",
+//            "Cohésion"
+//        )
+//    )
+//}
 
 //Preview
 @Preview(showBackground = true)
@@ -219,8 +265,8 @@ fun PreviewEventsScreen() {
 @Composable
 fun UserInput() { //TODO : log user inputs in history page
     var userInput by remember { mutableStateOf("") }
-    var responseText by remember { mutableStateOf("") } // Holds the AI's response
-    val context = LocalContext.current // Get context for Toast
+    var responseText by remember { mutableStateOf("") }
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -234,7 +280,7 @@ fun UserInput() { //TODO : log user inputs in history page
                 text = responseText,
                 fontSize = 18.sp,
                 color = Color.Gray,
-                modifier = Modifier.padding(bottom = 8.dp) // Space before input field
+                modifier = Modifier.padding(bottom = 8.dp)
             )
         }
 
@@ -244,7 +290,7 @@ fun UserInput() { //TODO : log user inputs in history page
             label = { Text("Ask your question...") },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 8.dp), // Space between input and button
+                .padding(bottom = 8.dp),
             shape = RoundedCornerShape(16.dp),
             colors = TextFieldDefaults.colors(
                 focusedIndicatorColor = Color.Gray,

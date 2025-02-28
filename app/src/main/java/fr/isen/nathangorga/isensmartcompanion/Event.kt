@@ -1,11 +1,14 @@
 package fr.isen.nathangorga.isensmartcompanion
 
+import java.io.Serializable
+
 
 data class Event(
-    val id: Int,
-    val title: String,
-    val description: String,
-    val date: String,
-    val location: String,
-    val category: String
-)
+    val category: String = "",
+    val date: String = "",
+    val description: String = "",
+    val id: String = "",
+    val location: String = "",
+    val title: String = ""
+) : Serializable
+
