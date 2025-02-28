@@ -106,7 +106,7 @@ fun BottomNavigationBar(navController: NavHostController) {
                 label = { Text(screen.replaceFirstChar { it.uppercase() }) },
                 selected = navController.currentBackStackEntryAsState().value?.destination?.route == screen,
                 onClick = { navController.navigate(screen) },
-                icon = { /* Add icons if needed */ }
+                icon = {}
             )
         }
     }
@@ -221,36 +221,6 @@ fun EventItem(event: Event, onClick: (Event) -> Unit) {
         }
     }
 }
-//
-//// TODO : delete getFakeEvents once API has been added
-//fun getFakeEvents(): List<Event> {
-//    return listOf(
-//        Event(
-//            1,
-//            "BDE Soirée",
-//            "Une soirée étudiante incroyable !",
-//            "2025-03-10",
-//            "Campus ISEN",
-//            "Soirée"
-//        ),
-//        Event(
-//            2,
-//            "Gala ISEN",
-//            "Le grand gala annuel de l'ISEN.",
-//            "2025-04-15",
-//            "Salle Prestige",
-//            "Gala"
-//        ),
-//        Event(
-//            3,
-//            "Journée Cohésion",
-//            "Une journée pour mieux se connaître.",
-//            "2025-02-20",
-//            "Parc ISEN",
-//            "Cohésion"
-//        )
-//    )
-//}
 
 //Preview
 @Preview(showBackground = true)
