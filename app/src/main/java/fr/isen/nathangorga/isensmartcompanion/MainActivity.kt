@@ -1,13 +1,13 @@
 package fr.isen.nathangorga.isensmartcompanion
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,6 +27,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -36,17 +37,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import fr.isen.nathangorga.isensmartcompanion.ui.theme.ISENSmartCompanionTheme
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.collectAsState
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -217,57 +220,51 @@ fun PreviewEventsScreen() {
 
 
 @Composable
-fun UserInput() { //TODO : log user inputs in history page
+fun UserInput(viewModel: MainViewModel = viewModel()) {
     var userInput by remember { mutableStateOf("") }
-    var responseText by remember { mutableStateOf("") } // Holds the AI's response
-    val context = LocalContext.current // Get context for Toast
+    // Utilisation de collectAsState pour observer les réponses du StateFlow
+    val responses by viewModel.responses.collectAsState()
 
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .fillMaxSize()
+            .padding(16.dp)
     ) {
-
-        if (responseText.isNotEmpty()) {
-            Text(
-                text = responseText,
-                fontSize = 18.sp,
-                color = Color.Gray,
-                modifier = Modifier.padding(bottom = 8.dp) // Space before input field
-            )
+        // Affichage de l'historique du chat
+        LazyColumn(modifier = Modifier.weight(1f)) {
+            items(responses) { response ->
+                Card(modifier = Modifier.padding(8.dp)) {
+                    Text(
+                        text = response,
+                        modifier = Modifier.padding(8.dp)
+                    )
+                }
+            }
         }
-
-        OutlinedTextField(
-            value = userInput,
-            onValueChange = { userInput = it },
-            label = { Text("Ask your question...") },
+        // Zone de saisie et bouton d'envoi
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 8.dp), // Space between input and button
-            shape = RoundedCornerShape(16.dp),
-            colors = TextFieldDefaults.colors(
-                focusedIndicatorColor = Color.Gray,
-                unfocusedIndicatorColor = Color.LightGray
-            )
-
-        )
-
-        Button(
-            onClick = {
-
-                Toast.makeText(context, "Question Submitted", Toast.LENGTH_SHORT).show()
-
-                // TODO : add API key to have real AI interaction
-                responseText = "AI says: '${userInput.trim()}' is a great question!"
-            },
-            shape = RoundedCornerShape(12.dp)
+                .padding(8.dp)
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.send),
-                contentDescription = "Send",
-                modifier = Modifier.size(24.dp)
+            TextField(
+                value = userInput,
+                onValueChange = { userInput = it },
+                modifier = Modifier.weight(1f),
+                placeholder = { Text("Entrez votre message") }
             )
+            Button(
+                onClick = {
+                    if (userInput.isNotBlank()) {
+                        // Ici, nous passons un lambda vide pour onResult, car on met à jour le StateFlow directement dans le ViewModel
+                        viewModel.sendMessageToGemini(userInput) { }
+                        userInput = ""
+                    }
+                },
+                modifier = Modifier.padding(start = 8.dp)
+            ) {
+                Text("Envoyer")
+            }
         }
     }
 }

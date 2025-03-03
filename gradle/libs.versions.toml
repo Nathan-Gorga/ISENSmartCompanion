@@ -1,5 +1,13 @@
 [versions]
 agp = "8.8.1"
+gaxHttpjson = "0.90.0"
+gaxHttpjsonVersion = "0.119.1"
+generativeai = "0.9.0"
+googleAuthLibraryOauth2Http = "1.14.0"
+googleAuthLibraryOauth2HttpVersion = "1.21.0"
+googleCloudDialogflow = "2.0.3"
+googleCloudDialogflowVersion = "2.15.0"
+googleGoogleCloudDialogflow = "2.33.0"
 kotlin = "2.0.0"
 coreKtx = "1.15.0"
 junit = "4.13.2"
@@ -14,6 +22,14 @@ supportAnnotations = "28.0.0"
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+gax-httpjson = { module = "com.google.api:gax-httpjson", version.ref = "gaxHttpjson" }
+gax-httpjson-v01191 = { module = "com.google.api:gax-httpjson", version.ref = "gaxHttpjsonVersion" }
+generativeai = { module = "com.google.ai.client.generativeai:generativeai", version.ref = "generativeai" }
+google-auth-library-oauth2-http = { module = "com.google.auth:google-auth-library-oauth2-http", version.ref = "googleAuthLibraryOauth2Http" }
+google-auth-library-oauth2-http-v1210 = { module = "com.google.auth:google-auth-library-oauth2-http", version.ref = "googleAuthLibraryOauth2HttpVersion" }
+google-cloud-dialogflow = { module = "com.google.cloud:google-cloud-dialogflow", version.ref = "googleCloudDialogflow" }
+google-cloud-dialogflow-v2150 = { module = "com.google.cloud:google-cloud-dialogflow", version.ref = "googleCloudDialogflowVersion" }
+google-cloud-dialogflow-v2330 = { module = "com.google.cloud:google-cloud-dialogflow", version.ref = "googleGoogleCloudDialogflow" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

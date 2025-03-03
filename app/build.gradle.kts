@@ -14,8 +14,9 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "AI_API_KEY", "\"${project.findProperty("AI_API_KEY") ?: ""}\"")
+
     }
 
     buildTypes {
@@ -36,6 +37,15 @@ android {
     }
     buildFeatures {
         compose = true
+
+        buildConfig = true
+
+    }
+
+    packaging {
+        resources {
+            excludes += "META-INF/DEPENDENCIES"
+        }
     }
 }
 
@@ -60,6 +70,18 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
 
     implementation(libs.androidx.material3)
+    implementation(libs.gax.httpjson)
+    implementation(libs.google.auth.library.oauth2.http)
+
+    implementation(libs.generativeai) // Vérifie la dernière version sur la doc
+
+
+//    implementation(libs.google.cloud.dialogflow.v2330)
+//    implementation(libs.gax.httpjson.v01191)
+//    implementation(libs.google.auth.library.oauth2.http.v1210)
 
 
 }
+
+
+
