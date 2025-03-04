@@ -20,16 +20,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,15 +40,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import fr.isen.nathangorga.isensmartcompanion.data.ChatMessage
 import fr.isen.nathangorga.isensmartcompanion.ui.theme.ISENSmartCompanionTheme
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.compose.runtime.collectAsState
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -156,10 +154,50 @@ fun EventsScreen(navController: NavHostController) {
 }
 
 @Composable
-fun HistoryScreen() { //TODO : add log of events
-    Text("Historique des événements", modifier = Modifier.padding(16.dp))
+fun HistoryScreen(viewModel: MainViewModel = viewModel()) {
+    val history by viewModel.chatHistory.collectAsState(initial = emptyList())
+
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .padding(16.dp)) {
+        Text("Chat History", fontSize = MaterialTheme.typography.headlineMedium.fontSize)
+
+        LazyColumn(modifier = Modifier.weight(1f)) {
+            items(history) { message ->
+                ChatHistoryItem(message, onDelete = { viewModel.deleteMessage(it) })
+            }
+        }
+
+        Button(onClick = { viewModel.clearHistory() }, modifier = Modifier.fillMaxWidth()) {
+            Text("Clear History")
+        }
+    }
 }
 
+@Composable
+fun ChatHistoryItem(message: ChatMessage, onDelete: (ChatMessage) -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        elevation = CardDefaults.cardElevation()
+    ) {
+        Column(modifier = Modifier.padding(8.dp)) {
+            Text(text = "User: ${message.userMessage}", style = MaterialTheme.typography.bodyMedium)
+            Text(text = "AI: ${message.aiResponse}", style = MaterialTheme.typography.bodySmall)
+            Text(
+                text = "Date: ${
+                    java.text.SimpleDateFormat("dd/MM/yyyy HH:mm").format(message.timestamp)
+                }",
+                style = MaterialTheme.typography.labelSmall
+            )
+
+            TextButton(onClick = { onDelete(message) }) {
+                Text("Delete")
+            }
+        }
+    }
+}
 
 @Composable
 fun EventItem(event: Event, onClick: () -> Unit) { //TODO : add event details
@@ -222,26 +260,32 @@ fun PreviewEventsScreen() {
 @Composable
 fun UserInput(viewModel: MainViewModel = viewModel()) {
     var userInput by remember { mutableStateOf("") }
-    // Utilisation de collectAsState pour observer les réponses du StateFlow
-    val responses by viewModel.responses.collectAsState()
+    val chatHistory by viewModel.chatHistory.collectAsState(initial = emptyList())
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // Affichage de l'historique du chat
+        // Display chat history
         LazyColumn(modifier = Modifier.weight(1f)) {
-            items(responses) { response ->
+            items(chatHistory) { chatMessage ->
                 Card(modifier = Modifier.padding(8.dp)) {
-                    Text(
-                        text = response,
-                        modifier = Modifier.padding(8.dp)
-                    )
+                    Column(modifier = Modifier.padding(8.dp)) {
+                        Text(
+                            text = "Vous: ${chatMessage.userMessage}",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                        Text(
+                            text = "ISEN_BOT: ${chatMessage.aiResponse}",
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
                 }
             }
         }
-        // Zone de saisie et bouton d'envoi
+
+        // Input field and send button
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -256,7 +300,6 @@ fun UserInput(viewModel: MainViewModel = viewModel()) {
             Button(
                 onClick = {
                     if (userInput.isNotBlank()) {
-                        // Ici, nous passons un lambda vide pour onResult, car on met à jour le StateFlow directement dans le ViewModel
                         viewModel.sendMessageToGemini(userInput) { }
                         userInput = ""
                     }
