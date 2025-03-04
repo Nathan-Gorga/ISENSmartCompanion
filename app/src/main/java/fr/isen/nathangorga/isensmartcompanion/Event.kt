@@ -1,5 +1,7 @@
 package fr.isen.nathangorga.isensmartcompanion
 
+import java.io.Serializable
+
 
 data class Event(
     val id: Int,
@@ -8,4 +10,4 @@ data class Event(
     val date: String,
     val location: String,
     val category: String
-)
+) : Serializable
