@@ -2,6 +2,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("kotlin-kapt")
+
+   
 }
 
 android {
@@ -74,7 +77,9 @@ dependencies {
     implementation(libs.google.auth.library.oauth2.http)
 
     implementation(libs.generativeai) // Vérifie la dernière version sur la doc
-
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    kapt(libs.androidx.room.compiler)
 
 //    implementation(libs.google.cloud.dialogflow.v2330)
 //    implementation(libs.gax.httpjson.v01191)

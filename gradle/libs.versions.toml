@@ -17,11 +17,15 @@ lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.10.0"
 composeBom = "2025.02.00"
 navigationCompose = "2.8.7"
+roomKtx = "2.6.1"
 supportAnnotations = "28.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomKtx" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomKtx" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomKtx" }
 gax-httpjson = { module = "com.google.api:gax-httpjson", version.ref = "gaxHttpjson" }
 gax-httpjson-v01191 = { module = "com.google.api:gax-httpjson", version.ref = "gaxHttpjsonVersion" }
 generativeai = { module = "com.google.ai.client.generativeai:generativeai", version.ref = "generativeai" }
@@ -49,4 +53,4 @@ support-annotations = { group = "com.android.support", name = "support-annotatio
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-
+kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version = "1.9.22" }
