@@ -1,5 +1,10 @@
 package fr.isen.nathangorga.isensmartcompanion
 
+import android.Manifest
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -40,6 +45,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -49,7 +56,9 @@ import androidx.navigation.compose.rememberNavController
 import fr.isen.nathangorga.isensmartcompanion.data.ChatMessage
 import fr.isen.nathangorga.isensmartcompanion.ui.theme.ISENSmartCompanionTheme
 
+
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -65,6 +74,34 @@ class MainActivity : ComponentActivity() {
 
 
             }
+        }
+        // ✅ Vérification de la version avant d'utiliser la permission POST_NOTIFICATIONS
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    101 // Code de requête
+                )
+            }
+        }
+    }
+
+    // 🔔 Fonction pour créer le canal de notifications
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                "event_channel", // ID du canal
+                "Event Reminders", // Nom du canal
+                NotificationManager.IMPORTANCE_HIGH // Importance (son, affichage sur écran)
+            ).apply {
+                description = "Notifications pour les rappels d'événements"
+            }
+
+            val manager = getSystemService(NotificationManager::class.java)
+            manager.createNotificationChannel(channel)
         }
     }
 }
@@ -116,8 +153,10 @@ fun NavigationGraph(navController: NavHostController, modifier: Modifier = Modif
         composable("home") { MainScreen() }
         composable("events") { EventsScreen(navController) }
         composable("history") { HistoryScreen() }
-
-
+        composable("event_detail/{eventId}") { backStackEntry ->
+            val eventId = backStackEntry.arguments?.getString("eventId")?.toIntOrNull()
+            eventId?.let { EventDetailScreen(eventId, navController) }
+        }
     }
 }
 
@@ -200,7 +239,7 @@ fun ChatHistoryItem(message: ChatMessage, onDelete: (ChatMessage) -> Unit) {
 }
 
 @Composable
-fun EventItem(event: Event, onClick: () -> Unit) { //TODO : add event details
+fun EventItem(event: Event, onClick: () -> Unit) {
     Card(
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.LightGray),
@@ -216,6 +255,7 @@ fun EventItem(event: Event, onClick: () -> Unit) { //TODO : add event details
         }
     }
 }
+
 
 // TODO : delete getFakeEvents once API has been added
 fun getFakeEvents(): List<Event> {
