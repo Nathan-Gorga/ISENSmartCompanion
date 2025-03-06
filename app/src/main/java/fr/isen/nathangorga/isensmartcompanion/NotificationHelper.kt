@@ -9,7 +9,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.util.Log
-import androidx.core.app.NotificationCompat
 
 fun canScheduleExactAlarms(context: Context): Boolean {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -23,7 +22,7 @@ fun canScheduleExactAlarms(context: Context): Boolean {
 
 @SuppressLint("ScheduleExactAlarm")
 fun scheduleNotification(context: Context, eventId: Int, eventTitle: String) {
-    val builder = NotificationCompat.Builder(context, "event_channel")
+
 
     val intent = Intent(context, NotificationReceiver::class.java).apply {
         putExtra("eventTitle", eventTitle)

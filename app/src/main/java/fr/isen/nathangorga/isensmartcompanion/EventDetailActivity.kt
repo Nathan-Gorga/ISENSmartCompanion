@@ -26,8 +26,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 
 class EventDetailActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,14 +33,14 @@ class EventDetailActivity : ComponentActivity() {
         createNotificationChannel(this)
         val eventId = intent.getIntExtra("eventId", -1) // Get eventId from Intent
         setContent {
-            val navController = rememberNavController() // Only if navigation is needed
-            EventDetailScreen(eventId, navController)
+
+            EventDetailScreen(eventId)
         }
     }
 }
 
 @Composable
-fun EventDetailScreen(eventId: Int, navController: NavHostController) {
+fun EventDetailScreen(eventId: Int) {
     val event = getFakeEvents().find { it.id == eventId.toString() }
     val context = LocalContext.current
     val sharedPreferences = context.getSharedPreferences("EventPrefs", Context.MODE_PRIVATE)

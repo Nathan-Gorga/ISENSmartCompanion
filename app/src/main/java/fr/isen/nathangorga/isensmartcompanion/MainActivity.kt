@@ -1,8 +1,7 @@
 package fr.isen.nathangorga.isensmartcompanion
 
 import android.Manifest
-import android.app.NotificationChannel
-import android.app.NotificationManager
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -33,6 +32,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -55,6 +55,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import fr.isen.nathangorga.isensmartcompanion.data.ChatMessage
 import fr.isen.nathangorga.isensmartcompanion.ui.theme.ISENSmartCompanionTheme
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 class MainActivity : ComponentActivity() {
@@ -75,7 +78,6 @@ class MainActivity : ComponentActivity() {
 
             }
         }
-        // ✅ Vérification de la version avant d'utiliser la permission POST_NOTIFICATIONS
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
                 != PackageManager.PERMISSION_GRANTED
@@ -83,27 +85,13 @@ class MainActivity : ComponentActivity() {
                 ActivityCompat.requestPermissions(
                     this,
                     arrayOf(Manifest.permission.POST_NOTIFICATIONS),
-                    101 // Code de requête
+                    101
                 )
             }
         }
     }
 
-    // 🔔 Fonction pour créer le canal de notifications
-    private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                "event_channel", // ID du canal
-                "Event Reminders", // Nom du canal
-                NotificationManager.IMPORTANCE_HIGH // Importance (son, affichage sur écran)
-            ).apply {
-                description = "Notifications pour les rappels d'événements"
-            }
 
-            val manager = getSystemService(NotificationManager::class.java)
-            manager.createNotificationChannel(channel)
-        }
-    }
 }
 
 @Composable
@@ -152,12 +140,12 @@ fun NavigationGraph(navController: NavHostController, modifier: Modifier = Modif
     NavHost(navController, startDestination = "home", modifier = modifier) {
         composable("home") { MainScreen() }
         composable("events") { EventsScreen(navController) }
-        composable("agenda") { AgendaScreen(navController) }
+        composable("agenda") { AgendaScreen() }
         composable("history") { HistoryScreen() }
 
         composable("event_detail/{eventId}") { backStackEntry ->
             val eventId = backStackEntry.arguments?.getString("eventId")?.toIntOrNull()
-            eventId?.let { EventDetailScreen(eventId, navController) }
+            eventId?.let { EventDetailScreen(eventId) }
         }
     }
 }
@@ -176,7 +164,23 @@ fun MainScreen() {
 
 @Composable
 fun EventsScreen(navController: NavHostController) {
-    val events = getFakeEvents()
+    var events by remember { mutableStateOf<List<Event>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
+
+    LaunchedEffect(Unit) {
+        RetrofitClient.apiService.getEvents().enqueue(object : Callback<List<Event>> {
+            override fun onResponse(call: Call<List<Event>>, response: Response<List<Event>>) {
+                if (response.isSuccessful) {
+                    events = response.body() ?: emptyList()
+                }
+                isLoading = false
+            }
+
+            override fun onFailure(call: Call<List<Event>>, t: Throwable) {
+                isLoading = false
+            }
+        })
+    }
 
     Column(
         modifier = Modifier
@@ -184,15 +188,22 @@ fun EventsScreen(navController: NavHostController) {
             .padding(16.dp)
     ) {
         Text("Événements ISEN", fontSize = 24.sp, modifier = Modifier.padding(bottom = 8.dp))
-        LazyColumn {
-            items(events) { event ->
-                EventItem(event, onClick = {
-                    navController.navigate("event_detail/${event.id}")
-                })
+
+        if (isLoading) {
+            Text("Chargement...")
+        } else {
+            LazyColumn {
+                items(events) { event ->
+                    EventItem(event, onClick = {
+                        navController.navigate("event_detail/${event.id}")
+                    })
+                }
             }
         }
     }
 }
+
+
 
 @Composable
 fun HistoryScreen(viewModel: MainViewModel = viewModel()) {
@@ -215,6 +226,7 @@ fun HistoryScreen(viewModel: MainViewModel = viewModel()) {
     }
 }
 
+@SuppressLint("SimpleDateFormat")
 @Composable
 fun ChatHistoryItem(message: ChatMessage, onDelete: (ChatMessage) -> Unit) {
     Card(

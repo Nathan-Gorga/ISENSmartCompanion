@@ -36,13 +36,13 @@ class AgendaActivity : ComponentActivity() {
 @Composable
 fun AppNavigation(navController: NavHostController) {
     NavHost(navController, startDestination = "agenda") {
-        composable("agenda") { AgendaScreen(navController) }
+        composable("agenda") { AgendaScreen() }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AgendaScreen(navController: NavHostController) {
+fun AgendaScreen() {
     val courses = remember { getStudentCourses() }
     val events = remember { getSubscribedEvents() }
 

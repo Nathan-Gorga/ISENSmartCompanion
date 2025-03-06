@@ -76,9 +76,15 @@ dependencies {
     implementation(libs.gax.httpjson)
     implementation(libs.google.auth.library.oauth2.http)
 
-    implementation(libs.generativeai) // Vérifie la dernière version sur la doc
+    implementation(libs.generativeai)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
+
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+
+
+    //noinspection KaptUsageInsteadOfKsp
     kapt(libs.androidx.room.compiler)//TODO : switch to KSP instead of kapt
 
 //    implementation(libs.google.cloud.dialogflow.v2330)
