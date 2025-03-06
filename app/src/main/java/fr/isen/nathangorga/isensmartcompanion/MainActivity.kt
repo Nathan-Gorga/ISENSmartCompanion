@@ -78,7 +78,7 @@ class MainActivity : ComponentActivity() {
 
             }
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
                 != PackageManager.PERMISSION_GRANTED
             ) {
@@ -119,17 +119,17 @@ fun TitleAndLogo() {
     }
 }
 
-//Navigation
+
 @Composable
 fun BottomNavigationBar(navController: NavHostController) {
-    val items = listOf("home", "events", "agenda", "history") // Added "agenda"
+    val items = listOf("home", "events", "agenda", "history")
     NavigationBar {
         items.forEach { screen ->
             NavigationBarItem(
                 label = { Text(screen.replaceFirstChar { it.uppercase() }) },
                 selected = navController.currentBackStackEntryAsState().value?.destination?.route == screen,
                 onClick = { navController.navigate(screen) },
-                icon = { /* Add icons if needed */ }
+                icon = { }
             )
         }
     }
@@ -143,7 +143,7 @@ fun NavigationGraph(navController: NavHostController, modifier: Modifier = Modif
         composable("agenda") { AgendaScreen() }
         composable("history") { HistoryScreen() }
 
-        // Update the event_detail composable to retrieve a string eventId
+
         composable("event_detail/{eventId}") { backStackEntry ->
             val eventId = backStackEntry.arguments?.getString("eventId") ?: ""
             EventDetailScreen(eventId)
@@ -152,7 +152,6 @@ fun NavigationGraph(navController: NavHostController, modifier: Modifier = Modif
 }
 
 
-// Screens
 @Composable
 fun MainScreen() {
     Column(modifier = Modifier.padding(bottom = 8.dp)) {
@@ -273,37 +272,7 @@ fun EventItem(event: Event, onClick: () -> Unit) {
 }
 
 
-//// TODO : delete getFakeEvents once API has been added
-//fun getFakeEvents(): List<Event> {
-//    return listOf(
-//        Event(
-//            1.toString(),
-//            "BDE Soirée",
-//            "Une soirée étudiante incroyable !",
-//            "2025-03-10",
-//            "Campus ISEN",
-//            "Soirée"
-//        ),
-//        Event(
-//            2.toString(),
-//            "Gala ISEN",
-//            "Le grand gala annuel de l'ISEN.",
-//            "2025-04-15",
-//            "Salle Prestige",
-//            "Gala"
-//        ),
-//        Event(
-//            3.toString(),
-//            "Journée Cohésion",
-//            "Une journée pour mieux se connaître.",
-//            "2025-02-20",
-//            "Parc ISEN",
-//            "Cohésion"
-//        )
-//    )
-//}
 
-//Preview
 @Preview(showBackground = true)
 @Composable
 fun PreviewEventsScreen() {
@@ -341,7 +310,7 @@ fun UserInput(viewModel: MainViewModel = viewModel()) {
             }
         }
 
-        // Input field and send button
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()

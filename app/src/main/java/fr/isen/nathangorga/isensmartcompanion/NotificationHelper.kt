@@ -26,7 +26,7 @@ fun scheduleNotification(context: Context, eventId: String, eventTitle: String) 
         putExtra("eventTitle", eventTitle)
     }
 
-    // Use hashCode() to generate a unique integer from the eventId string
+
     val requestCode = eventId.hashCode()
 
     val pendingIntent = PendingIntent.getBroadcast(
