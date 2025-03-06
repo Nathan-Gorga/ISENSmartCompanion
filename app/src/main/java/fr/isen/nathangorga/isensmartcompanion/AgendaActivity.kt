@@ -82,7 +82,7 @@ fun AgendaScreen() {
     }
 }
 
-// Mock data functions (Replace with real data fetching logic)
+
 fun getStudentCourses(): List<Course> {
     return listOf(
         Course("Mathematics", "08:00 - 10:00"),
@@ -110,5 +110,5 @@ fun getSubscribedEvents(): List<Event> {
     )
 }
 
-// Data classes for courses and events
+
 data class Course(val title: String, val time: String)

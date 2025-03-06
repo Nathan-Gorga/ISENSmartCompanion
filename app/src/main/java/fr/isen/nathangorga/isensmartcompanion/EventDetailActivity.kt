@@ -34,7 +34,7 @@ class EventDetailActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         createNotificationChannel(this)
-        // Retrieve the event ID as a String rather than an Int
+
         val eventId = intent.getStringExtra("eventId") ?: ""
         setContent {
             EventDetailScreen(eventId)
@@ -44,11 +44,11 @@ class EventDetailActivity : ComponentActivity() {
 
 @Composable
 fun EventDetailScreen(eventId: String) {
-    // Create state to hold the loaded event and loading status.
+
     var event by remember { mutableStateOf<Event?>(null) }
     var isLoading by remember { mutableStateOf(true) }
 
-    // Perform the API call when the eventId changes.
+
     LaunchedEffect(eventId) {
         RetrofitClient.apiService.getEvents().enqueue(object : retrofit2.Callback<List<Event>> {
             override fun onResponse(
@@ -56,7 +56,7 @@ fun EventDetailScreen(eventId: String) {
                 response: retrofit2.Response<List<Event>>
             ) {
                 if (response.isSuccessful) {
-                    // Find the event with the matching eventId
+
                     event = response.body()?.find { it.id == eventId }
                 }
                 isLoading = false
@@ -64,7 +64,7 @@ fun EventDetailScreen(eventId: String) {
 
             override fun onFailure(call: retrofit2.Call<List<Event>>, t: Throwable) {
                 isLoading = false
-                // Optionally handle the error (e.g., show a message)
+
             }
         })
     }

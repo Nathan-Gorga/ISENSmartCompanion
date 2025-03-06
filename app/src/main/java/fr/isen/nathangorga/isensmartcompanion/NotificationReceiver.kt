@@ -19,7 +19,7 @@ class NotificationReceiver : BroadcastReceiver() {
         val notificationManager = NotificationManagerCompat.from(context)
 
         val notification =
-            NotificationCompat.Builder(context, "event_channel") // Utilise bien "event_channel"
+            NotificationCompat.Builder(context, "event_channel")
                 .setSmallIcon(R.drawable.ic_event)
                 .setContentTitle("Reminder")
                 .setContentText("Upcoming Event: $eventTitle")
