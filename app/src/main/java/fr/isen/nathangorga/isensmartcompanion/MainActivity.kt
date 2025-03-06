@@ -143,12 +143,14 @@ fun NavigationGraph(navController: NavHostController, modifier: Modifier = Modif
         composable("agenda") { AgendaScreen() }
         composable("history") { HistoryScreen() }
 
+        // Update the event_detail composable to retrieve a string eventId
         composable("event_detail/{eventId}") { backStackEntry ->
-            val eventId = backStackEntry.arguments?.getString("eventId")?.toIntOrNull()
-            eventId?.let { EventDetailScreen(eventId) }
+            val eventId = backStackEntry.arguments?.getString("eventId") ?: ""
+            EventDetailScreen(eventId)
         }
     }
 }
+
 
 // Screens
 @Composable
@@ -271,35 +273,35 @@ fun EventItem(event: Event, onClick: () -> Unit) {
 }
 
 
-// TODO : delete getFakeEvents once API has been added
-fun getFakeEvents(): List<Event> {
-    return listOf(
-        Event(
-            1.toString(),
-            "BDE Soirée",
-            "Une soirée étudiante incroyable !",
-            "2025-03-10",
-            "Campus ISEN",
-            "Soirée"
-        ),
-        Event(
-            2.toString(),
-            "Gala ISEN",
-            "Le grand gala annuel de l'ISEN.",
-            "2025-04-15",
-            "Salle Prestige",
-            "Gala"
-        ),
-        Event(
-            3.toString(),
-            "Journée Cohésion",
-            "Une journée pour mieux se connaître.",
-            "2025-02-20",
-            "Parc ISEN",
-            "Cohésion"
-        )
-    )
-}
+//// TODO : delete getFakeEvents once API has been added
+//fun getFakeEvents(): List<Event> {
+//    return listOf(
+//        Event(
+//            1.toString(),
+//            "BDE Soirée",
+//            "Une soirée étudiante incroyable !",
+//            "2025-03-10",
+//            "Campus ISEN",
+//            "Soirée"
+//        ),
+//        Event(
+//            2.toString(),
+//            "Gala ISEN",
+//            "Le grand gala annuel de l'ISEN.",
+//            "2025-04-15",
+//            "Salle Prestige",
+//            "Gala"
+//        ),
+//        Event(
+//            3.toString(),
+//            "Journée Cohésion",
+//            "Une journée pour mieux se connaître.",
+//            "2025-02-20",
+//            "Parc ISEN",
+//            "Cohésion"
+//        )
+//    )
+//}
 
 //Preview
 @Preview(showBackground = true)

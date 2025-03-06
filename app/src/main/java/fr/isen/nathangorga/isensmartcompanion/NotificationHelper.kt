@@ -21,23 +21,26 @@ fun canScheduleExactAlarms(context: Context): Boolean {
 
 
 @SuppressLint("ScheduleExactAlarm")
-fun scheduleNotification(context: Context, eventId: Int, eventTitle: String) {
-
-
+fun scheduleNotification(context: Context, eventId: String, eventTitle: String) {
     val intent = Intent(context, NotificationReceiver::class.java).apply {
         putExtra("eventTitle", eventTitle)
     }
 
+    // Use hashCode() to generate a unique integer from the eventId string
+    val requestCode = eventId.hashCode()
+
     val pendingIntent = PendingIntent.getBroadcast(
-        context, eventId, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        context,
+        requestCode,
+        intent,
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
 
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     val triggerTime = System.currentTimeMillis() + 10 * 1000 // 10 seconds later
     alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent)
-
-
 }
+
 
 
 fun createNotificationChannel(context: Context) {
