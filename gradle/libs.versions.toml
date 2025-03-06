@@ -1,5 +1,14 @@
 [versions]
 agp = "8.8.1"
+converterGson = "2.9.0"
+gaxHttpjson = "0.90.0"
+gaxHttpjsonVersion = "0.119.1"
+generativeai = "0.9.0"
+googleAuthLibraryOauth2Http = "1.14.0"
+googleAuthLibraryOauth2HttpVersion = "1.21.0"
+googleCloudDialogflow = "2.0.3"
+googleCloudDialogflowVersion = "2.15.0"
+googleGoogleCloudDialogflow = "2.33.0"
 kotlin = "2.0.0"
 coreKtx = "1.15.0"
 junit = "4.13.2"
@@ -9,11 +18,25 @@ lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.10.0"
 composeBom = "2025.02.00"
 navigationCompose = "2.8.7"
+retrofit = "2.9.0"
+roomKtx = "2.6.1"
 supportAnnotations = "28.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomKtx" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomKtx" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomKtx" }
+converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
+gax-httpjson = { module = "com.google.api:gax-httpjson", version.ref = "gaxHttpjson" }
+gax-httpjson-v01191 = { module = "com.google.api:gax-httpjson", version.ref = "gaxHttpjsonVersion" }
+generativeai = { module = "com.google.ai.client.generativeai:generativeai", version.ref = "generativeai" }
+google-auth-library-oauth2-http = { module = "com.google.auth:google-auth-library-oauth2-http", version.ref = "googleAuthLibraryOauth2Http" }
+google-auth-library-oauth2-http-v1210 = { module = "com.google.auth:google-auth-library-oauth2-http", version.ref = "googleAuthLibraryOauth2HttpVersion" }
+google-cloud-dialogflow = { module = "com.google.cloud:google-cloud-dialogflow", version.ref = "googleCloudDialogflow" }
+google-cloud-dialogflow-v2150 = { module = "com.google.cloud:google-cloud-dialogflow", version.ref = "googleCloudDialogflowVersion" }
+google-cloud-dialogflow-v2330 = { module = "com.google.cloud:google-cloud-dialogflow", version.ref = "googleGoogleCloudDialogflow" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -27,10 +50,11 @@ androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-toolin
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3", version = "1.3.1" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 support-annotations = { group = "com.android.support", name = "support-annotations", version.ref = "supportAnnotations" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-
+kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version = "1.9.22" }
