@@ -43,7 +43,7 @@ class EventDetailActivity : ComponentActivity() {
 
 @Composable
 fun EventDetailScreen(eventId: Int, navController: NavHostController) {
-    val event = getFakeEvents().find { it.id == eventId }
+    val event = getFakeEvents().find { it.id == eventId.toString() }
     val context = LocalContext.current
     val sharedPreferences = context.getSharedPreferences("EventPrefs", Context.MODE_PRIVATE)
     val isNotified =

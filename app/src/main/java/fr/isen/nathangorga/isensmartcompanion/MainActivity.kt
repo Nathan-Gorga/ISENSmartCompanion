@@ -134,7 +134,7 @@ fun TitleAndLogo() {
 //Navigation
 @Composable
 fun BottomNavigationBar(navController: NavHostController) {
-    val items = listOf("home", "events", "history")
+    val items = listOf("home", "events", "agenda", "history") // Added "agenda"
     NavigationBar {
         items.forEach { screen ->
             NavigationBarItem(
@@ -152,7 +152,9 @@ fun NavigationGraph(navController: NavHostController, modifier: Modifier = Modif
     NavHost(navController, startDestination = "home", modifier = modifier) {
         composable("home") { MainScreen() }
         composable("events") { EventsScreen(navController) }
+        composable("agenda") { AgendaScreen(navController) }
         composable("history") { HistoryScreen() }
+
         composable("event_detail/{eventId}") { backStackEntry ->
             val eventId = backStackEntry.arguments?.getString("eventId")?.toIntOrNull()
             eventId?.let { EventDetailScreen(eventId, navController) }
@@ -261,7 +263,7 @@ fun EventItem(event: Event, onClick: () -> Unit) {
 fun getFakeEvents(): List<Event> {
     return listOf(
         Event(
-            1,
+            1.toString(),
             "BDE Soirée",
             "Une soirée étudiante incroyable !",
             "2025-03-10",
@@ -269,7 +271,7 @@ fun getFakeEvents(): List<Event> {
             "Soirée"
         ),
         Event(
-            2,
+            2.toString(),
             "Gala ISEN",
             "Le grand gala annuel de l'ISEN.",
             "2025-04-15",
@@ -277,7 +279,7 @@ fun getFakeEvents(): List<Event> {
             "Gala"
         ),
         Event(
-            3,
+            3.toString(),
             "Journée Cohésion",
             "Une journée pour mieux se connaître.",
             "2025-02-20",
